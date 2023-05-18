@@ -1,0 +1,58 @@
+import streamlit as st
+
+layout = {
+    'plot_bgcolor': 'rgba(0,0,0,0)',
+    'paper_bgcolor': 'rgba(0,0,0,0)'
+}
+query_copper_refined = '''
+select
+"DATE"::DATE as production_date,
+"VALUE"::NUMBER as production_value
+from MINING_DATA
+where LOCATION_NAME ='India'
+and INDICATOR_NAME = 'Production of copper, refined'
+and production_date > '2010-12-31'
+order by production_date
+;
+'''
+
+query_zinc_mine = '''
+select
+"DATE"::DATE as production_date,
+"VALUE"::NUMBER as production_value
+from MINING_DATA
+where LOCATION_NAME ='India'
+and INDICATOR_NAME = 'Production of zinc, mine'
+and production_date > '2010-12-31'
+order by production_date
+;
+'''
+
+query_data_flow = '''
+WITH MAX_EXE_ID
+AS
+(
+  SELECT MAX(EXECUTION_ID) as MAX_ID FROM "CODE_REPO"."DATA_ACCELERATOR_SCHEMA"."PROCESS_AUDIT_LOG"
+),
+SRC_RECS
+AS
+(
+  SELECT SUM(ROWS_LOADED) AS SOURCE_RECORDS FROM "CODE_REPO"."DATA_ACCELERATOR_SCHEMA"."COPY_PROCESS_LOG_VW"
+  WHERE EXECUTION_ID=(SELECT MAX_ID FROM MAX_EXE_ID) GROUP BY EXECUTION_ID
+)
+SELECT 
+CASE 
+    WHEN DETAILS_AFTER_EXEC:DESTINATION LIKE '%DQ_ERROR_TABLE%' THEN 'ERRONEOUS RECORDS'
+    WHEN DETAILS_AFTER_EXEC:DESTINATION LIKE '%MINING_DATA%' THEN 'TARGET RECORDS'
+END AS LABEL,
+DETAILS_AFTER_EXEC:ROWS_INSERTED::NUMBER AS RECORDS_COUNT
+FROM "CODE_REPO"."DATA_ACCELERATOR_SCHEMA"."PROCESS_AUDIT_LOG"
+WHERE EXECUTION_ID=(SELECT MAX_ID FROM MAX_EXE_ID) AND DETAILS_AFTER_EXEC:DESTINATION LIKE '%DQ_ERROR_TABLE%' OR DETAILS_AFTER_EXEC:DESTINATION LIKE '%MINING_DATA%'
+UNION
+SELECT 'SOURCE RECORDS' AS LABEL,SOURCE_RECORDS::NUMBER AS RECORDS_COUNT FROM SRC_RECS ORDER BY RECORDS_COUNT DESC;
+'''
+
+
+def blanklines(n):
+    for i in range(n):
+        st.write('')
