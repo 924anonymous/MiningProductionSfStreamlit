@@ -31,11 +31,11 @@ def dashboard_app():
 
                 fig_bar_zinc_mine = px.bar(df_zinc, y=df_zinc['PRODUCTION_VALUE'], x=df_zinc['PRODUCTION_DATE'],
                                            title='Production of zinc, mine',
-                                           labels={'PRODUCTION_VALUE': 'Production Value tonnes (metal content)',
+                                           labels={'PRODUCTION_VALUE': 'Production Value (tonnes (metal content))',
                                                    'PRODUCTION_DATE': 'Production Date'})
                 fig_line_zinc_mine = px.line(df_zinc, y=df_zinc["PRODUCTION_VALUE"], x=df_zinc["PRODUCTION_DATE"],
                                              title='Production of zinc, mine',
-                                             labels={'PRODUCTION_VALUE': 'Production Value tonnes (metal content)',
+                                             labels={'PRODUCTION_VALUE': 'Production Value (tonnes (metal content))',
                                                      'PRODUCTION_DATE': ' ProductionDate'},
                                              markers=True)
 
