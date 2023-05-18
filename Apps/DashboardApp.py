@@ -20,22 +20,22 @@ def dashboard_app():
                 fig_bar_copper_mine = px.bar(df_copper, y=df_copper['PRODUCTION_VALUE'],
                                              x=df_copper['PRODUCTION_DATE'],
                                              title='Production of copper, Refined',
-                                             labels={'PRODUCTION_VALUE': 'Production Value',
+                                             labels={'PRODUCTION_VALUE': 'Production Value (tonnes (metric))',
                                                      'PRODUCTION_DATE': 'Production Date'})
                 fig_line_copper_mine = px.line(df_copper, y=df_copper["PRODUCTION_VALUE"],
                                                x=df_copper["PRODUCTION_DATE"],
                                                title='Production of copper, Refined',
-                                               labels={'PRODUCTION_VALUE': 'Production Value',
+                                               labels={'PRODUCTION_VALUE': 'Production Value (tonnes (metric))',
                                                        'PRODUCTION_DATE': 'Production Date'},
                                                markers=True)
 
                 fig_bar_zinc_mine = px.bar(df_zinc, y=df_zinc['PRODUCTION_VALUE'], x=df_zinc['PRODUCTION_DATE'],
                                            title='Production of zinc, mine',
-                                           labels={'PRODUCTION_VALUE': 'Production Value',
+                                           labels={'PRODUCTION_VALUE': 'Production Value tonnes (metal content)',
                                                    'PRODUCTION_DATE': 'Production Date'})
                 fig_line_zinc_mine = px.line(df_zinc, y=df_zinc["PRODUCTION_VALUE"], x=df_zinc["PRODUCTION_DATE"],
                                              title='Production of zinc, mine',
-                                             labels={'PRODUCTION_VALUE': 'Production Value',
+                                             labels={'PRODUCTION_VALUE': 'Production Value tonnes (metal content)',
                                                      'PRODUCTION_DATE': ' ProductionDate'},
                                              markers=True)
 
