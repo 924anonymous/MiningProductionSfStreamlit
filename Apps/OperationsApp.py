@@ -16,6 +16,7 @@ def operations_app():
         try:
             if len(df_date_flow) > 0:
                 df_date_flow_bar = df_date_flow[df_date_flow['LABEL'] != 'ERRONEOUS RECORDS']
+                df_date_flow_pie = df_date_flow[df_date_flow['LABEL'] != 'SOURCE RECORDS']
 
                 fig_bar_data_flow = px.bar(df_date_flow_bar, y=df_date_flow_bar['RECORDS_COUNT'],
                                            x=df_date_flow_bar['LABEL'],
@@ -23,11 +24,11 @@ def operations_app():
                                            labels={'RECORDS_COUNT': 'Records Count',
                                                    'LABEL': 'Label'})
 
-                fig_pie_null_clean_records = px.pie(df_date_flow, values="RECORDS_COUNT",
+                fig_pie_null_clean_records = px.pie(df_date_flow_pie, values="RECORDS_COUNT",
                                                     names="LABEL",
                                                     title="Data Flow"
                                                     )
-                fig_pie_null_clean_records.update_traces(marker=dict(colors=['Yellow', 'green', 'red']))
+                fig_pie_null_clean_records.update_traces(marker=dict(colors=['green', 'red']))
 
                 fig_pie_null_clean_records.update_layout(Utility.layout)
 
