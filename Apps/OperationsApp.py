@@ -43,6 +43,6 @@ def operations_app():
                 with right_col:
                     st.plotly_chart(fig_bar_data_flow, use_container_width=True)
             else:
-                st.error('Data Not Available At Source Location, No Dashboards To Display 🧐')
+                st.error('Statistics Data Not Available At Source Location, No Dashboards To Display 🧐')
         except Exception as e:
             st.error(e)
