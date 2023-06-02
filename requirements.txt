@@ -1,6 +1,6 @@
 altair==4.2.0
 plotly==5.9.0
-psycopg2_binary==2.9.6c
+psycopg2_binary==2.9.6
 snowflake_connector_python==3.0.3
 streamlit==1.22.0
 streamlit_autorefresh==0.0.1
