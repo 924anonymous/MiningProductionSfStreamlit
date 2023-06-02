@@ -2,6 +2,7 @@ import streamlit as st
 import snowflake.connector
 import plotly.graph_objects as go
 import plotly.express as px
+import Utility
 from streamlit_autorefresh import st_autorefresh
 
 
@@ -9,7 +10,7 @@ def realtime_kafka_dashboard_app():
     st.markdown("<h1 style='text-align: center;'>RealTime Sales Dashboard</h1>", unsafe_allow_html=True)
     st.markdown("<style>footer {visibility: hidden;}</style>", unsafe_allow_html=True)
 
-    st_autorefresh(interval=1 * 60 * 1000, key="datarefresh")
+    st_autorefresh(interval=1 * 15 * 1000, key="datarefresh")
 
     try:
         @st.cache_resource
@@ -30,6 +31,7 @@ def realtime_kafka_dashboard_app():
     else:
         try:
             if len(main_df) > 0:
+                data_count = len(main_df)
                 total_sales = int(main_df["TOTAL"].sum())
                 average_rating = round(main_df["RATING"].mean(), 1)
                 star_rating = ":star:" * int(round(average_rating, 0))
@@ -45,6 +47,12 @@ def realtime_kafka_dashboard_app():
                 with right_column:
                     st.subheader("Average Sales Per Transaction:")
                     st.subheader(f"US $ {average_sale_by_transaction}")
+
+                st.divider()
+                Utility.blanklines(2)
+                st.subheader("Realtime Record Count")
+                not_used = st.slider(label='', min_value=0, max_value=2000,
+                                     value=data_count, label_visibility="collapsed", disabled=True)
 
                 st.markdown("""---""")
 
@@ -68,8 +76,8 @@ def realtime_kafka_dashboard_app():
                 left_column, right_column = st.columns(2)
                 left_column.plotly_chart(fig_product_sales, use_container_width=True)
 
-                fig_line_chart_product_sales = px.line(sales_by_product_line, x="TOTAL", y=sales_by_product_line.index,
-                                                       title='<b>Sales by Product Lines<b>',
+                fig_line_chart_product_sales = px.line(sales_by_product_line, x=sales_by_product_line.index,
+                                                       y="TOTAL", title='<b>Sales by Product Lines<b>',
                                                        color_discrete_sequence=["#e81e3c"])
 
                 fig_line_chart_product_sales.update_layout(

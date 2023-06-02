@@ -15,6 +15,6 @@ RUN git clone https://github.com/924anonymous/MiningProductionSfStreamlit.git .
 
 RUN pip install -r requirements.txt
 
-EXPOSE 8502
+EXPOSE 8501
 
-ENTRYPOINT ["streamlit", "run", "MainUiApp.py", "--server.port=8502", "--server.address=0.0.0.0"]
+ENTRYPOINT ["streamlit", "run", "MainUiApp.py", "--server.port=8501", "--server.address=0.0.0.0"]
