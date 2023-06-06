@@ -11,7 +11,7 @@ def realtime_kafka_dashboard_app():
     st.markdown("<h1 style='text-align: center;'>RealTime Sales Dashboard</h1>", unsafe_allow_html=True)
     st.markdown("<style>footer {visibility: hidden;}</style>", unsafe_allow_html=True)
 
-    st_autorefresh(interval=1 * 15 * 1000, key="datarefresh")
+    st_autorefresh(interval=1 * 5 * 1000, key="datarefresh")
 
     try:
         @st.cache_resource
