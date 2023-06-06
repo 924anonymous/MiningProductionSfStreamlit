@@ -26,12 +26,13 @@ def realtime_kafka_dashboard_app():
             return df
 
         main_df = get_df("SELECT * FROM KAFKA.KAFKA_SCHEMA.SALES")
+        raw_df = get_df("SELECT * FROM KAFKA.KAFKA_SCHEMA.SALES_RAW")
     except Exception as e:
         st.error(e)
     else:
         try:
             if len(main_df) > 0:
-                data_count = len(main_df)
+                data_count = len(raw_df)
                 total_sales = int(main_df["TOTAL"].sum())
                 average_rating = round(main_df["RATING"].mean(), 1)
                 star_rating = ":star:" * int(round(average_rating, 0))
