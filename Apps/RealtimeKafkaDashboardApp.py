@@ -3,6 +3,7 @@ import snowflake.connector
 import plotly.graph_objects as go
 import plotly.express as px
 import Utility
+import pandas as pd
 from streamlit_autorefresh import st_autorefresh
 
 
@@ -25,14 +26,14 @@ def realtime_kafka_dashboard_app():
             df = cur.fetch_pandas_all()
             return df
 
-        main_df = get_df("SELECT * FROM KAFKA.KAFKA_SCHEMA.SALES")
-        raw_df = get_df("SELECT * FROM KAFKA.KAFKA_SCHEMA.SALES_RAW")
+        main_df = get_df("SELECT * FROM KAFKA.KAFKA_SCHEMA.SALES_RAW_MAIN_VW")
     except Exception as e:
         st.error(e)
     else:
         try:
             if len(main_df) > 0:
-                data_count = len(raw_df)
+                main_df["TOTAL"] = main_df["TOTAL"].apply(pd.to_numeric)
+                data_count = len(main_df)
                 total_sales = int(main_df["TOTAL"].sum())
                 average_rating = round(main_df["RATING"].mean(), 1)
                 star_rating = ":star:" * int(round(average_rating, 0))
