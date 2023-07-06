@@ -1,6 +1,3 @@
-import streamlit as st
-
-
 def insertData(query):
     # db = st.selectbox('Choose database',('Select databse..','Postgres','MySQL','Oracle'))
     db = 'postgres'

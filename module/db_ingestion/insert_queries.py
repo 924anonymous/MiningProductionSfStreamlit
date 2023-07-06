@@ -1,10 +1,11 @@
+import datetime
+import json
 # """
 # Purpose : input parameters for queryGenerator function
 # """
 
-db_ingestion_config_details_query = ''' 
-/************************ DBINGESTION_CONFIG_DETAILS ************************/
-insert into config.dbingestion_config_details (
+db_ingestion_config_details_query = '''
+insert into dbingestion_config_details (
  DATABASE_NAME,
  SCHEMA_NAME,
  TABLE_NAME,
@@ -55,14 +56,13 @@ insert into config.dbingestion_config_details (
 \"target_file_prefix_path\": \"\", 
 \"incr_column_timestamp_format\": \"{incr_column_timestamp_format}\",
 \"incr_column_timestamp_cond_check\": \"{incr_column_timestamp_cond_check}\"}}',
-CURRENT_TIMESTAMP,
+'{CURRENT_TIMESTAMP}',
 'active',
-CURRENT_USER,
-{connection_id});'''
+'streamlit_app',
+{connection_id});'''.replace("{CURRENT_TIMESTAMP}", str(datetime.datetime.now()))
 
 sfload_config_details_query = '''
-/************************ SFLOAD_CONFIG_DETAILS ************************/
-insert into config.sfload_config_details(
+insert into sfload_config_details(
  DATABASE_NAME,
  SCHEMA_NAME,
  TABLE_NAME,
@@ -98,12 +98,11 @@ insert into config.sfload_config_details(
 \"condition\" : \"\",
 \"limit_value\" : \"\"}}',
 'active',
-CURRENT_TIMESTAMP,
-CURRENT_USER);'''
+'{CURRENT_TIMESTAMP}',
+'streamlit_app');'''.replace("{CURRENT_TIMESTAMP}", str(datetime.datetime.now()))
 
 sf_load_stg_config_query = '''
-/************************ SF_LOAD_STG_CONFIG_DETAILS ************************/
-insert into config.sf_load_stg_config (
+insert into sf_load_stg_config (
 CONFIGURATIONS,
 BLOCK_NUMBER,
 STATUS,
@@ -119,15 +118,14 @@ TARGET_DATABASE) VALUES ('{{\"source_table_schema\": \"{source_table_schema}\",
 \"target_table_database\": \"{target_table_database}\"}}',
 '{block_number}',
 'active',
-CURRENT_TIMESTAMP,
-CURRENT_USER,
+'{CURRENT_TIMESTAMP}',
+'streamlit_app',
 '{target_schema}',
 '{target_table}',
-'{target_database}');'''
+'{target_database}');'''.replace("{CURRENT_TIMESTAMP}", str(datetime.datetime.now()))
 
-sf_load_curated_config_query = ''' 
-/************************ SF_LOAD_CURATED_CONFIG ************************/
-insert into config.sf_load_curated_config(
+sf_load_curated_config_query = '''
+insert into sf_load_curated_config(
  CONFIGURATIONS,
  BLOCK_NUMBER,
  STATUS,
@@ -144,15 +142,14 @@ insert into config.sf_load_curated_config(
 \"dml_type\": \"{dml_type}\"}}',
 '{block_number}',
 'active',
-CURRENT_TIMESTAMP,
-CURRENT_USER,
+'{CURRENT_TIMESTAMP}',
+'streamlit_app',
 '{target_schema}',
 '{target_table}',
-'{target_database}');'''
+'{target_database}');'''.replace("{CURRENT_TIMESTAMP}", str(datetime.datetime.now()))
 
-incremental_config_details_query = ''' 
-/************************ Incremental_Config_Details ************************/
-insert into config.incremental_details(
+incremental_config_details_query = '''
+insert into incremental_details(
  DATABASE_NAME,
  SCHEMA_NAME,
  TABLE_NAME,
@@ -168,13 +165,11 @@ insert into config.incremental_details(
  '{column_name}',
  '{operator}',
 'active',
-CURRENT_TIMESTAMP,
-CURRENT_USER);'''
+'{CURRENT_TIMESTAMP}',
+'streamlit_app');'''.replace("{CURRENT_TIMESTAMP}", str(datetime.datetime.now()))
 
 sf_load_block_driver_details = '''
- /************************ SF_BLOCK_DRIVER_DETAILS ************************/
-
-INSERT INTO edo_contextdb_snowflake_prod.SF_LOAD_BLOCK_DRIVER_DETAILS (SNOWFLAKE_DATABASE_MASTER,
+INSERT INTO SF_LOAD_BLOCK_DRIVER_DETAILS (SNOWFLAKE_DATABASE_MASTER,
 SNOWFLAKE_SCHEMA_MASTER,
 TABLE_MASTER,
  BLOCK_NUMBER,
@@ -183,23 +178,21 @@ TABLE_MASTER,
  '{sf_schema_master}',
  '{table_master}',
  '{block_number}',
- CURRENT_TIMESTAMP,
- CURRENT_USER);'''
+ '{CURRENT_TIMESTAMP}',
+ 'streamlit_app');'''.replace("{CURRENT_TIMESTAMP}", str(datetime.datetime.now()))
 
 dbingestion_block_driver_details_query = '''
- /************************ DBINGESTION_BLOCK_DRIVER_DETAILS_TABLE ************************/
-
-INSERT INTO edo_contextdb_snowflake_prod.DBINGESTION_BLOCK_DRIVER_DETAILS(SNOWFLAKE_DATABASE_MASTER,
- SNOWFLAKE_SCHEMA_MASTER,
+INSERT INTO DBINGESTION_BLOCK_DRIVER(SOURCE_DATABASE_MASTER,
+ SCHEMA_MASTER,
  TABLE_MASTER,
  BLOCK_NUMBER,
- CREATE_DATE,
- CREATED_BY) VALUES('{sf_db_master}',
- '{sf_schema_master}',
- '{table_master}',
+ CREATED_AT,
+ CREATED_USER) VALUES('{db_name}',
+ '{schema_name}',
+ '{table_name}',
  '{block_number}',
- CURRENT_TIMESTAMP,
- CURRENT_USER);'''
+ '{CURRENT_TIMESTAMP}',
+ 'streamlit_app');'''.replace("{CURRENT_TIMESTAMP}", str(datetime.datetime.now()))
 
 incremental_table_list_query = '''
 INSERT INTO dev_code_repo.COM.INCREMENTAL_TABLES_LIST(
@@ -212,16 +205,81 @@ STATUS) VALUES(
  '{table_name}',
  '{status}'); '''
 
-update_incremental_details = '''
-update config.incremental_details 
-set status='inactive' 
+update_incremental_details = '''update incremental_details 
+set status='inactive'
 where database_name = '{database_name}'
 and schema_name = '{schema_name}'
-and table_name = '{table_name}' and status = 'active'; '''
+and table_name = '{table_name}' and status = 'active';'''
 
 update_dbingestion_config_details = '''
-update config.dbingestion_config_details
+update dbingestion_config_details
 set status = 'inactive'
 where database_name = '{database_name}'
 and schema_name = '{schema_name}'
-and table_name = '{table_name}' and status = 'active'; '''
+and table_name = '{table_name}' and status = 'active';'''
+
+
+SF_LOAD_CONFIG_DETAILS = '''insert into CODE_REPO.DATA_ACCELERATOR_SCHEMA.SF_LOAD_CONFIG_DETAILS_PROD
+(DATABASE_NAME, SCHEMA_NAME, TABLE_NAME, CONFIG_DTLS, STATUS, CREATE_DATE, CREATED_BY)
+VALUES(
+'{db_name}',
+'{schema_name}',
+'{table_name}',
+'{{\"database_name\": \"{db_name}\",
+\"schema_name\": \"{schema_name}\",
+\"table_name\": \"{raw_table_name}\",
+\"file_prefix_path\": \"{file_prefix_path}\",
+\"sf_ext_stage\": \"COMMON_OBJECTS.{sf_ext_stage}\",
+\"executed_sp\": \"DATA_ACCELERATOR_SCHEMA.GENERIC_LOAD_STG_TABLE_SP\",
+\"load_type\": \"{load_type}\",
+\"batch_id\": \"no\",
+\"insert_date_time\": \"no\",
+\"update_date_time\": \"no\",
+\"truncate_load\": \"{truncate_load}\",
+\"purge_files\": \"no\",
+\"force\":\"{force}\",
+\"action_on_error\":\"continue\",
+\"validate_errors\":\"no\",
+\"offload\":\"no\",
+\"error_table_name\" : \"SAVE_COPY_ERROR\",
+\"error_schema_name\" : \"DATA_ACCELERATOR_SCHEMA\",
+\"stage_name\": \"DATA_ACCELERATOR_SCHEMA.EXT_STAGE_UNLOAD_CSV\",
+\"folder_name\" : \"snowflake-blazeclan/unload\",
+\"query_columns\" : \"\",
+\"condition\" : \"\",
+\"limit_value\" : \"10\"
+}}',
+'active',
+CURRENT_TIMESTAMP(),
+'Streamlit_App');'''
+
+SF_DQ_CONFIG_DETAILS = '''insert into CODE_REPO.DATA_ACCELERATOR_SCHEMA.SF_DQ_CONFIG_DETAILS_PROD
+(DATABASE_NAME, SCHEMA_NAME, TABLE_NAME, CONFIG_DTLS, STATUS, CREATE_DATE, CREATED_BY)
+VALUES(
+'{db_name}',
+'{schema_name}',
+'{table_name}',
+'{{\"source_database_name\": \"{source_database_name}\",
+\"source_schema_name\": \"{source_schema_name}\",
+\"source_table_name\": \"{source_table_name}\",
+\"target_database_name\":\"{target_database_name}\",
+\"target_schema_name\":\"{target_schema_name}\",
+\"target_table_name\":\"{target_table_name}\",
+\"skip_dq\":\"{skip_dq}\",
+\"error_schema_name\":\"DATA_ACCELERATOR_SCHEMA\",
+\"error_table_name\":\"DQ_ERROR_TABLE\",
+\"error_offload\":\"no\",
+\"executed_sp\": \"DATA_ACCELERATOR_SCHEMA.GENERIC_FETCH_ERROR_RECORDS_SP\",
+\"error_offload_config\":{{
+\"stage_name\": \"DATA_ACCELERATOR_SCHEMA.EXT_STAGE_RDB_ORC\",
+\"folder_name\": \"globe/offload/new_device\",
+\"query_columns\": \"\",
+\"condition\": \"yes\",
+\"limit_value\": \"\"
+}},
+\"upload_to_target\":\"yes\",
+\"upload_to_target_config\":{{\"executed_sp\": \"DATA_ACCELERATOR_SCHEMA.GENERIC_FETCH_CLEAN_RECORDS_SP\"}}
+}}',
+'active',
+CURRENT_TIMESTAMP(),
+'Streamlit_App');'''
